@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Data Modification</title>
+    <link rel="stylesheet" type="text/css" href="../../static/websocketstyles.css">
+   
+</head>
+<body >
+    <h2 class="container">Client Data Modification</h2>
+    <div  style="width: 300px; margin: auto; margin-top: 100px; ">
+    <label for="email">Enter client email:</label>
+    <input type="text" id="email" placeholder="Enter email">
+    <button style=" margin: 15px 0 ;" onclick="getData()">Get Data</button>
+    
+    <div >
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Name">
+    </div>
+
+    <div>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" placeholder="Phone Number">
+    </div>
+    
+    <button onclick="updateData()">Update Data</button>
+    <br/>
+    <p id="result"></p>
+</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+    <script>
+        const socket = io.connect('http://127.0.0.1:9090');
+
+        function getData() {
+            const email = document.getElementById('email').value;
+            socket.emit('get_data', email);
+        }
+
+        socket.on('display_data', data => {
+            if ('error' in data) {
+                alert(data.error);
+            } else {
+                document.getElementById('name').value = data.name;
+                document.getElementById('email').value = data.email;
+                document.getElementById('phone').value = data.phone;
+            }
+        });
+
+        function updateData() {
+            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+
+            socket.emit('update_data', { email, name, phone });
+            document.getElementById('result').innerText = "Client Updated";
+
+        }
+    </script>
+</body>
+</html>
