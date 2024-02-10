@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/soap_styles.css">
+    <title>Client SOAP</title>
+</head>
+<body style="margin:50px;">
+    <h1 class="container">Create new Client</h1>
+
+    <h2 >Add client</h2>
+    <form id="addClientForm">
+        <label for="nom">Name :</label>
+        <input type="text" id="nom" name="nom" required>
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" required>
+        <label for="telephone">Phone Number :</label>
+        <input type="tel" id="telephone" name="telephone" required>
+        <button type="button" onclick="addClient()">Add Client</button>
+    </form>
+
+    <h2 >Résultat</h2>
+    <p id="result"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <script>
+        function addClient() {
+            const nom = document.getElementById('nom').value;
+            const email = document.getElementById('email').value;
+            const telephone = document.getElementById('telephone').value;
+    
+          
+            const soapRequest = `<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:web="urn:client_service">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <web:add_client>
+            <web:name>${nom}</web:name>
+            <web:email>${email}</web:email>
+            <web:phone>${telephone}</web:phone>
+</web:add_client>
+
+    </soapenv:Body>
+</soapenv:Envelope>`;
+
+            axios.post('http://localhost:8095', soapRequest, {
+                headers: {
+                    'Content-Type': 'text/xml;charset=UTF-8',
+                    'SOAPAction': 'add_client'
+                }
+            })
+            .then(response => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(response.data, 'text/xml');
+              document.getElementById('result').innerText = "Client Added";  
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    
+</body>
+</html>
