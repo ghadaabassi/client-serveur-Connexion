@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package clients;
+
+service ClientService {
+    rpc DeleteClient(ClientRequest) returns (ClientResponse);
+}
+
+message ClientRequest {
+    string email = 1;
+}
+
+message ClientResponse {
+    bool success = 1;
+    string message = 2;
+}

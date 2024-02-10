@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/gRPCstyles.css">
+    <title>Delete Client</title>
+</head>
+<body>
+    <h1 class="container">Delete Client</h1>
+    <form id="deleteForm" style="margin: 0 auto; width: 400px;">
+        <label for="email">Client Email:</label>
+        <input type="text" id="email" name="email" required>
+        <button type="button" onclick="deleteClientGRPC()">Delete Client (gRPC)</button>
+    </form>
+    <p id="result"></p>
+
+    <script src="https://cdn.rawgit.com/improbable-eng/grpc-web/v1.2.1/javascript/net/grpc/web/grpc-web.js"></script>
+    <script src="https://cdn.rawgit.com/improbable-eng/grpc-web/v1.2.1/javascript/net/grpc/web/client/grpc-web-client.js"></script>
+    <script src="https://cdn.rawgit.com/improbable-eng/grpc-web/v1.2.1/javascript/net/grpc/web/client/grpc-web-client-closure.js"></script>
+    <script src="https://cdn.rawgit.com/improbable-eng/grpc-web/v1.2.1/javascript/net/grpc/web/client/grpc-web-client-npm.js"></script>
+    <script src="https://cdn.rawgit.com/improbable-eng/grpc-web/v1.2.1/javascript/net/grpc/web/client/grpc-web-client-umd.js"></script>
+    
+    <script src="https://cdn.rawgit.com/protocolbuffers/protobuf/3.15.8/js/protobuf.js"></script>
+    
+    <!-- Include the generated protobuf files -->
+    <script src="path/to/clients_pb.js"></script>
+    <script src="path/to/clients_pb_grpc_web.js"></script>
+
+    <script>
+        function deleteClientGRPC() {
+            var email = document.getElementById('email').value;
+
+            var request = new clients_pb.ClientRequest();
+            request.setEmail(email);
+
+            var client = new clients_pb_grpc.ClientServiceClient('http://127.0.0.1:50051');
+
+            client.deleteClient(request, {}, function(err, response) {
+                if (err) {
+                    console.error('Error:', err);
+                } else {
+                    document.getElementById('result').innerText = response.getMessage();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
