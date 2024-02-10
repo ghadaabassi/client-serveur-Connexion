@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/graphql_styles.css">
+    <title>GraphQL Client</title>
+</head>
+<body>
+    <h2 class="container">Clients</h2>
+
+<table class="client-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+        </tr>
+    </thead>
+    <tbody id="result">
+      
+    </tbody>
+</table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+       
+        const graphqlQuery = `
+            query {
+                clients {
+                    name
+                    email
+                    phone
+                }
+            }
+        `;
+
+       
+        const encodedQuery = encodeURIComponent(graphqlQuery);
+
+       
+        const url = `http://localhost:5000/graphql?query=${encodedQuery}`;
+
+       
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const clients = data.data.clients;
+                const resultElement = document.getElementById('result');
+
+                if (clients && clients.length > 0) {
+                    clients.forEach(client => {
+                        
+                        resultElement.innerHTML += `
+                            <tr>
+                                <td>${client.name}</td>
+                                <td>${client.email}</td>
+                                <td>${client.phone}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    resultElement.innerHTML = '<tr><td colspan="3">No clients data available</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+
+</body>
+</html>
